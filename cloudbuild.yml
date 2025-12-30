@@ -1,0 +1,20 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - -c
+      - |
+        docker build -t southamerica-east1-docker.pkg.dev/shop-ms-482816/image-registry/orders-ms-prd --platform=linux/amd64 --build-arg ORDERS_MS_DATABASE_URL=$$DATABASE_URL .
+    secretEnv: ['DATABASE_URL']
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        'southamerica-east1-docker.pkg.dev/shop-ms-482816/image-registry/orders-ms-prd',
+      ]
+availableSecrets:
+  secretManager:
+    - versionName: projects/806891034004/secrets/ORDERS_MS_DATABASE_URL/versions/1
+      env: 'DATABASE_URL'
+options:
+  logging: CLOUD_LOGGING_ONLY
